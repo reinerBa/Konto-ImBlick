@@ -1,7 +1,7 @@
 const state = {
   main: 0,
-  accountNames: [],
-  accounts: []
+  accounts: [],
+  selectedAcc: {}
 }
 
 const mutations = {
@@ -10,6 +10,9 @@ const mutations = {
   },
   INCREMENT_MAIN_COUNTER (state) {
     state.main++
+  },
+  selectAcc (state, selAcc) {
+    state.selectedAcc = selAcc
   },
   addAccount (state, newAcc) {
     state.accounts.push(newAcc)
