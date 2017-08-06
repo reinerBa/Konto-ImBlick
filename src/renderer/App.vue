@@ -1,16 +1,22 @@
 <template>
   <div id="app">
     <navigation></navigation>
+    <div class="content">
     <router-view></router-view>
-  </div>
+  </div></div>
 </template>
 
 <script>
-  export default {
-    name: 'account-viewer'
-  }
+import navigation from './components/Navigation'
+
+export default {
+  name: 'account-viewer',
+  components: { navigation }
+}
 </script>
 
-<style>
-  /* CSS */
+<style scoped>
+.content{
+  margin-left: 100px;
+}
 </style>
