@@ -23,6 +23,11 @@ export default new Router({
       path: '/salden',
       name: 'salden',
       component: require('@/components/Salden')
+    },
+    {
+      path: '/charts',
+      name: 'charts',
+      component: require('@/components/charts')
     }
   ]
 })
