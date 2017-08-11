@@ -1,5 +1,6 @@
 <template>
   <div id="wrapper">
+    <div ref="gChart"></div>
     <schart canvasId="myCanvas"
     type="bar"
     width="800px"
@@ -10,6 +11,9 @@
 </template>
 
 <script>
+/* global google */
+/* eslint no-undef: "error" */
+
 import Schart from './vchart/vue-schart'
 export default {
   name: 'charts',
@@ -29,17 +33,39 @@ export default {
     Schart
   },
   mounted () {
-//     this.data.map(() => { this.data.pop() })
-    for (let i = this.data.length; i > 0; i--) {
+    for (let i = this.data.length; i > 0; i--)
       this.data.pop()
-    }
 
+    var myRows = []
     for (let n of this.$store.state.Accounts.selectedAcc) {
-      //  let obj = {'name': n.anfangssaldo.buchungsdatum, value: n.anfangssaldo.value}
-      //  this.data.push(obj)
       let obj2 = {'name': n.schlusssaldo.buchungsdatum, value: n.schlusssaldo.value}
       this.data.push(obj2)
+      myRows.push([new Date(n.anfangssaldo.buchungsdatum), n.anfangssaldo.value])
+      myRows.push([new Date(n.schlusssaldo.buchungsdatum), n.schlusssaldo.value])
     }
+
+//    google.charts.load('current', {packages: ['corechart', 'line']})
+    var data = new google.visualization.DataTable()
+    data.addColumn('date', 'X')
+    data.addColumn('number', 'Betrag')
+
+/*    data.addRows([
+      [0, 0], [1, 10], [2, 23], [3, 17], [4, 18], [5, 9]
+    ])
+*/
+    data.addRows(myRows)
+    var options = {
+      hAxis: {
+        title: 'Time'
+      },
+      vAxis: {
+        title: 'Popularity'
+      },
+      explorer: { actions: ['dragToZoom', 'rightClickToReset'] }
+    }
+
+    var chart = new google.visualization.LineChart(this.$refs.gChart)
+    chart.draw(data, options)
   },
   filters: {
     isoToLocal (d) {

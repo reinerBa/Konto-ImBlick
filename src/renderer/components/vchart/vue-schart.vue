@@ -1,4 +1,5 @@
 <template>
+<!-- https://github.com/lin-xin/vue-schart/blob/master/LICENCE vue-schart by lin-xi -->
     <div>
         <canvas :id="canvasId" :width="width" :height="height"></canvas>
     </div>

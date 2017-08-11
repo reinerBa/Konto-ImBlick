@@ -7,6 +7,20 @@
     </div>
     <button v-on:click="openFile">Open</button>
 
+    <br/>
+    <h2>Login Verwaltung</h2>
+    <div>
+        <div><p v-for="acc in $store.state.Settings.loginAccs">{{acc.blz}}
+          <button @click="removeAcc(acc)">Löschen</button></p>
+          <label for="kennung">Kunden-ID/Benutzerkennung:</label>
+          <input id="kennung" type="text" v-model="kennung"/>
+          <label for="blz">BLZ:</label>
+          <input id="blz" type="text" v-model="blz"/>
+          <label for="url">Hbci Url:</label>
+          <input id="url" type="text" v-model="url"/>
+          <button @click="saveNewAcc">Speichern</button>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -16,7 +30,20 @@ var {remote} = require('electron')
 var electronFs = remote.require('fs')
 export default {
   name: 'account-management',
+  data () {
+    return {
+      kennung: '',
+      blz: '',
+      url: ''
+    }
+  },
   methods: {
+    saveNewAcc () {
+      this.$store.dispatch('addLoginAcc', {kennung: this.kennung, blz: this.blz})
+    },
+    removeAcc (a) {
+      this.$store.dispatch('removeLoginAcc', a)
+    },
     select (acc) {
       this.$store.commit('selectAcc', acc)
     },
@@ -31,10 +58,8 @@ export default {
           let c = JSON.parse(data)
 
           this.$store.commit('addAccount', {name: fileNames[0], data: c})
-          if (err) {
+          if (err)
             alert('An error ocurred reading the file :' + err.message)
-            // return
-          }
         })
       })
     }
@@ -48,8 +73,11 @@ export default {
 }
 </script>
 
-<style scoped>
-#wrapperAcc{
-  padding: .5rem;
-}
+<style scoped lang="stylus">
+#wrapperAcc
+  padding .5rem
+
+input
+  max-width 5em
+
 </style>

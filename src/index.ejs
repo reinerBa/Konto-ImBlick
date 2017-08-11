@@ -3,6 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>account-viewer</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>   google.charts.load('current', {packages: ['corechart', 'line']})</script>
+
     <% if (htmlWebpackPlugin.options.nodeModules) { %>
       <!-- Add `node_modules/` to global paths so `require` works properly in development -->
       <script>
