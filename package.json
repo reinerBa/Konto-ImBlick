@@ -1,5 +1,5 @@
 {
-  "name": "account-viewer",
+  "name": "bank-account-viewer",
   "version": "0.0.0",
   "author": "reinerBa <reinerbam@mailbox.org>",
   "description": "shows the transations in charts",
