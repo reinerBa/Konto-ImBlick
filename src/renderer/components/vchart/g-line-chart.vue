@@ -10,13 +10,23 @@
 export default {
   data: function () {
     return {
-      chartInst: []
+      chart: {},
+      optionsDefault: {
+        hAxis: {
+          title: 'Time'
+        },
+        vAxis: {
+          title: 'Popularity'
+        },
+        explorer: { actions: ['dragToZoom', 'rightClickToReset'] }
+      }
     }
   },
   props: {
     data: {
       type: Array,
-      default: []
+      default: [],
+      required: true
     },
     options: {
       type: Object,
@@ -24,40 +34,44 @@ export default {
     }
   },
   mounted: function () {
+    this.chart = new google.visualization.LineChart(this.$refs.gChart)
     this.$nextTick(function () {
-      this.renderChart();
+      this.renderChart()
     })
   },
   destroyed () {
-  //  delete this.chartInst[0]
+    this.chart.clearChart()
   },
   methods: {
     renderChart () {
-      let data = new google.visualization.DataTable()
-      data.addColumn('date', 'X')
-      data.addColumn('number', 'Betrag')
+      if (this.options) {
+        for (let key in this.options)
+          this.optionsDefault[key] = this.options[key]
+      }
+      let chartData = new google.visualization.DataTable()
+      chartData.addColumn('date', 'X')
+      chartData.addColumn('number', 'Betrag')
 
-      data.addRows(this.data)
-      var options = {
-        hAxis: {
-          title: 'Time'
-        },
-        vAxis: {
-          title: 'Popularity'
+      let myRows = []
+      for (let n of this.data) {
+        myRows.push([new Date(n.anfangssaldo.buchungsdatum), n.anfangssaldo.value])
+        let value = n.anfangssaldo.value
+        var sArray = [...n.saetze]
+        for (let s of sArray) {
+          value = value + s.value * (s.soll_haben === 'S' ? -1 : 1)
+          myRows.push([new Date(s.datum), value])
         }
+
+        myRows.push([new Date(n.schlusssaldo.buchungsdatum), n.schlusssaldo.value])
       }
 
-      var chart = new google.visualization.LineChart(this.$refs.gChart)
-      chart.draw(data, options)
+      chartData.addRows(myRows)
+      this.chart.draw(chartData, this.optionsDefault)
     }
   },
   watch: {
-    'data': function () {
-      this.renderChart()
-    },
-    'options': function () {
-      this.renderChart()
-    }
+    data: 'renderChart',
+    options: 'renderChart'
   }
 }
 </script>

@@ -8,32 +8,34 @@ const settingsDb = new Datastore({filename: neDBPath, autoload: true})
 console.log(path.join(remote.app.getPath('userData'), 'settingsAccViewer.db'))
 
 const state = {
-  loginAccs: []
+  loginAccs: [],
+  bankUrls: []
 }
 
 const mutations = {
   init (state, docx) {
-    state.loginAccs.push(...docx)
+    if (docx.loginAccs)
+      state.loginAccs.push(...docx.loginAccs)
+    if (docx.bankUrls)
+      state.bankUrls.push(...docx.bankUrls)
   },
   addLoginAcc (state, acc) {
     state.loginAccs.push(acc)
   },
-  removeLoginAcc (state, idx) {
-    state.loginAccs.splice(idx, 1)
+  removeLoginAcc (state, accIdx) {
+    state.loginAccs.splice(accIdx, 1)
+  },
+  saveBankUrl (state, urlObj) {
+    state.bankUrls.push(urlObj)
+  },
+  removeBankUrl (state, urlIdx) {
+    state.bankUrls.splice(urlIdx, 1)
   }
 }
 
-const getters = {
-  // ...
-//  getTodoById: (state, getters) => (id) => {
-//    return state.todos.find(todo => todo.id === id)
-//  }
-}
+const getters = {}
 
 const actions = {
-  checkout ({ commit, state }, products) {
-    ;
-  },
   addLoginAcc ({ commit, state }, acc) {
     acc.type = 'loginAcc'
     settingsDb.insert(acc, (err, newDoc) => {
@@ -52,10 +54,32 @@ const actions = {
         commit('removeLoginAcc', idx)
     })
   },
+  addBankUrl ({ commit, state }, url) {
+    url.type = 'bankurl'
+    settingsDb.insert(url, (err, newDoc) => {
+      if (!err)
+        commit('saveBankUrl', newDoc)
+      else
+        console.dir(err)
+    })
+  },
+  removeBankUrl ({ commit, state }, url) {
+    let idx = state.bankUrls.find((a) => {
+      return JSON.stringify(a) === JSON.stringify(url)
+    })
+    settingsDb.remove({ _id: url._id }, {}, (err, numRemoved) => {
+      if (!err && numRemoved === 1)
+        commit('removeBankUrl', idx)
+    })
+  },
   async init ({ commit }) {
     settingsDb.find({type: 'loginAcc'}, (err, docs) => {
       if (!err)
-        commit('init', docs)
+        commit('init', {loginAccs: docs})
+    })
+    settingsDb.find({type: 'bankurl'}, (err, docs) => {
+      if (!err)
+        commit('init', {bankUrls: docs})
     })
   }
 }

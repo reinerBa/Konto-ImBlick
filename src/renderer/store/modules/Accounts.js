@@ -8,23 +8,35 @@ const accountsDb = new Datastore({filename: neDBPath, autoload: true})
 const state = {
   main: 0,
   accounts: [],
-  selectedAcc: {}
+  selectedAcc: []
 }
 
 const mutations = {
-  selectAcc (state, selAcc) {
-    state.selectedAcc = selAcc
+  toggleSelectAcc (state, account) {
+    if (state.selectedAcc.includes(account))
+      state.selectedAcc.splice(state.selectedAcc.indexOf(account), 1)
+    else
+      state.selectedAcc.push(account)
   },
   addAccount (state, newAcc) {
     state.accounts.push(newAcc)
+  },
+  loadAuszuege (state, auszeugeAr) {
+    if (auszeugeAr.length) {
+      let kontoBez = auszeugeAr[0].konto_bez
+      let acc = state.accounts.find((a) => a.konto_bez === kontoBez)
+      if (acc)
+        acc.data(...auszeugeAr)
+      else
+        state.accounts.push({konto_bez: kontoBez, data: auszeugeAr})
+    }
   }
 }
 
 const getters = {
-  // ...
-//  getTodoById: (state, getters) => (id) => {
-//    return state.todos.find(todo => todo.id === id)
-//  }
+  accIsSelected: (state, getters) => (acc) => {
+    return state.selectedAcc.includes(acc)
+  },
   getAuszeugeFrom: (state, getters) => (kontoBez, from, to) => {
     return new Promise((resolve, reject) => {
       if (!from && !to) {
@@ -44,9 +56,19 @@ const getters = {
 }
 
 const actions = {
-  someAsyncTask ({ commit }) {
-    // do something async
-    commit('INCREMENT_MAIN_COUNTER')
+  addAuszug ({ commit, state }, auszeugeAr) {
+    accountsDb.insert(auszeugeAr, (err, newDocs) => {
+      if (!err)
+        commit('loadAuszuege', newDocs)
+      else
+        console.dir(err)
+    })
+  },
+  async loadAuszuege ({ commit, state }, kontoBez) {
+    accountsDb.find({'konto_bez': kontoBez, auszug_nr: {$exists: true}}, (err, docs) => {
+      if (!err)
+        commit('loadAuszuege', docs)
+    })
   }
 }
 
