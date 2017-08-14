@@ -8,7 +8,8 @@ const accountsDb = new Datastore({filename: neDBPath, autoload: true})
 const state = {
   main: 0,
   accounts: [],
-  selectedAcc: []
+  selectedAcc: [],  //  {name, data}
+  curSaldos: []   // {name, datum, value}
 }
 
 const mutations = {

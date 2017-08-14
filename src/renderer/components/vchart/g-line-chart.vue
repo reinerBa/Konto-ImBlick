@@ -54,9 +54,9 @@ export default {
 
       let myRows = []
       for (let n of this.data) {
-        myRows.push([new Date(n.anfangssaldo.buchungsdatum), n.anfangssaldo.value])
+        //  myRows.push([new Date(n.anfangssaldo.buchungsdatum), n.anfangssaldo.value])
         let value = n.anfangssaldo.value
-        var sArray = [...n.saetze]
+        var sArray = [...(n.saetze || [])]
         for (let s of sArray) {
           value = value + s.value * (s.soll_haben === 'S' ? -1 : 1)
           myRows.push([new Date(s.datum), value])
