@@ -22,6 +22,9 @@
             <td>{{acc.blz.blz}}</td>
             <td>{{acc.blz.url}}</td>
             <td><button @click="removeLoginAcc(acc)">Löschen</button></td>
+            <td>
+              <load-salden-button :blz="acc.blz.blz" :benutzerkennung="acc.kennung" :bankUrl="acc.blz.url"></load-salden-button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -60,6 +63,7 @@
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
+import LoadSaldenButton from './FinTsCommunication/LoadSaldenButton'
 const {dialog} = require('electron').remote
 var {remote} = require('electron')
 var electronFs = remote.require('fs')
@@ -112,6 +116,9 @@ export default {
       // Or load a local HTML file
       //  win.loadURL(`file://${__dirname}/app/index.html`)
     }
+  },
+  components: {
+    LoadSaldenButton
   }
 }
 </script>

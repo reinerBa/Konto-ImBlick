@@ -22,6 +22,12 @@ const mutations = {
   addAccount (state, newAcc) {
     state.accounts.push(newAcc)
   },
+  addSaldo (state, newSaldo) {
+    let sIdx = state.curSaldos.find((e) => e.iban === newSaldo.iban)
+    if (sIdx)
+      state.curSaldos.splice(sIdx, 1)
+    state.curSaldos.push(newSaldo)
+  },
   loadAuszuege (state, auszeugeAr) {
     if (auszeugeAr.length) {
       let kontoBez = auszeugeAr[0].konto_bez
@@ -37,6 +43,14 @@ const mutations = {
 const getters = {
   accIsSelected: (state, getters) => (acc) => {
     return state.selectedAcc.includes(acc)
+  },
+  saldosCummulated: (state) => {
+    let value = 0
+    if (state.curSaldos.length) {
+      for (let s of state.curSaldos)
+        value += s.value
+      return value
+    }
   },
   getAuszeugeFrom: (state, getters) => (kontoBez, from, to) => {
     return new Promise((resolve, reject) => {

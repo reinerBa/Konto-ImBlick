@@ -1,6 +1,6 @@
 const FinTSClient = require('open-fin-ts-js-client')
 
-export default async function (bankenliste, blz, customerLogin, pin) {
+export default async function (bankenliste, blz, customerLogin, pin, saldosOrUmsaetze) {
   // 2. FinTSClient anlegen
   // BLZ: 12345678
   // Kunden-ID/Benutzerkennung: test1
@@ -16,10 +16,18 @@ export default async function (bankenliste, blz, customerLogin, pin) {
 
   let returnObj = {}
   for (let i = 0; i < client.konten.length; i++) {
-    try {
-      returnObj[i] = await getTransactions()
-    } catch (e) {
-      return returnObj
+    if (!saldosOrUmsaetze) {
+      try {
+        returnObj[client.konten.iban] = await getTransactions(client.konten[i], null, null)
+      } catch (e) {
+        return returnObj
+      }
+    } else {
+      try {
+        returnObj[client.konten.iban] = await getSalden()
+      } catch (e) {
+        return returnObj
+      }
     }
   }
 
@@ -43,14 +51,25 @@ export default async function (bankenliste, blz, customerLogin, pin) {
     })
   }
 
-  function getTransactions () {
+  function getTransactions (konto, from, to) {
     return new Promise((resolve, reject) => {
-      client.MsgGetKontoUmsaetze(client.konten[0].sepa_data, null, null, (error, rMsg, data) => {
+      client.MsgGetKontoUmsaetze(konto.sepa_data, from, to, (error, rMsg, data) => {
         if (error) {
           console.log('Fehler: ' + error)
           reject(error)
         } else
           resolve({rMsg, data})
+      })
+    })
+  }
+
+  function getSalden (konto) {
+    return new Promise(function (resolve, reject) {
+      client.MsgGetSaldo(konto, function (error, recvMsg, saldo) {
+        if (error)
+          reject(error)
+        else
+          resolve({recvMsg, saldo})
       })
     })
   }

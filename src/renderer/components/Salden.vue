@@ -4,7 +4,12 @@
     <div v-else>
       Salden:
       <template v-for="s in $store.state.Accounts.curSaldos">
-        {{s}}
+        <p>
+          {{s.iban}} {{s.value}}
+        </p>
+        <p v-if="$store.state.Accounts.saldosCummulated">
+          {{$store.state.Accounts.saldosCummulated}}
+        </p>
       </template>
       <template v-for="d in $store.state.Accounts.selectedAcc">
         <h2>{{d.name | filename}}</h2>
