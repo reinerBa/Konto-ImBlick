@@ -30,8 +30,9 @@ export default {
       let pin = await this.pinPromt()
       if (!pin)
         return false
-      var client = new FinTSClient(this.blz, this.benutzerkennung, pin, this.bankUrls || this.bankUrl)
+      console.log(pin)
       try {
+        var client = new FinTSClient(Number(this.blz), this.benutzerkennung, pin, this.bankUrls || this.bankUrl)
         // 3. Verbindung aufbauen
         await client.EstablishConnection()
         console.log('Erfolgreich Verbunden')
@@ -62,7 +63,7 @@ export default {
     },
     async pinPromt () {
       try {
-        let value = await smalltalk.prompt('PIN', 'Bitte geben sie ihre PIN ein', '10')
+        let value = await smalltalk.prompt('PIN', 'Bitte geben sie ihre PIN ein', '123')
         return value
       } catch (exception) {
         console.log('Keine PIN eingegeben')
