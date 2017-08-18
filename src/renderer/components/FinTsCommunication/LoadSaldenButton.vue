@@ -1,10 +1,20 @@
 <template>
+<div>
 <button @click="load">Lade Salden</button>
+<modal-button v-if="showPinInput" @close="showPinInput = false;">
+  <input slot="body" ref="pinInput" @keypress.enter="pinEntered" value="" type="password"/>
+  <button slot="footer" @click="pinEntered">OK</button>
+</modal-button>
+
+<modal-button v-if="showError" @close="showError = false;">
+  <span slot="body">Beim Abruf der Daten ist ein Fehler aufgetreten.</span>
+</modal-button>
+</div>
 </template>
 
 <script>
 import FinTSClient from 'open-fin-ts-js-client-promise'
-import smalltalk from 'smalltalk'
+import ModalButton from './ModalButton'
 
 export default {
   props: {
@@ -25,17 +35,33 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      showPinInput: false,
+      showError: false
+    }
+  },
   methods: {
-    async load () {
-      let pin = await this.pinPromt()
+    load () {
+      this.showPinInput = true
+    },
+    async pinEntered () {
+      let pin = this.$refs.pinInput.value
+      this.$refs.pinInput.value = ''
+      this.showPinInput = false
+
       if (!pin)
         return false
-      console.log(pin)
+
+      let client = new FinTSClient(Number(this.blz), this.benutzerkennung, pin, this.bankUrls || this.bankUrl)
       try {
-        var client = new FinTSClient(Number(this.blz), this.benutzerkennung, pin, this.bankUrls || this.bankUrl)
         // 3. Verbindung aufbauen
+        this.showError = ''
+        setTimeout(function () { if (this.showError === '') this.showError = true }.bind(this), 2500)
+
         await client.EstablishConnection()
-        console.log('Erfolgreich Verbunden')
+        this.showError = true
+        console.log('Erfolgreich Verbunden not')
 
         // 4. Kontoumsätze für alle Konten nacheinander laden
         for (let konto of client.konten) {
@@ -55,20 +81,15 @@ export default {
         // 7. Verbindung beenden
         await client.MsgEndDialog()
       } catch (exception) {
-        console.error('Fehler: ' + exception)
+        console.log('Fehler: ' + exception)
       }
       // 8. Secure Daten im Objekt aus dem Ram löschen
       client.closeSecure()
       console.log('ENDE')
-    },
-    async pinPromt () {
-      try {
-        let value = await smalltalk.prompt('PIN', 'Bitte geben sie ihre PIN ein', '123')
-        return value
-      } catch (exception) {
-        console.log('Keine PIN eingegeben')
-      }
     }
+  },
+  components: {
+    ModalButton
   }
 }
 </script>
