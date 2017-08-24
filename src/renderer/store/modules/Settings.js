@@ -72,7 +72,7 @@ const actions = {
         commit('removeBankUrl', idx)
     })
   },
-  async init ({ commit }) {
+  async initSettings ({ commit }) {
     settingsDb.find({type: 'loginAcc'}, (err, docs) => {
       if (!err)
         commit('init', {loginAccs: docs})

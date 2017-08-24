@@ -1,9 +1,12 @@
 import Datastore from 'nedb'
 import path from 'path'
 import {remote} from 'electron'
+import AES from 'crypto-js/aes'
+//  import sha256 from 'crypto-js/sha256'
+import CryptoJS from 'crypto-js'
 
 const neDBPath = path.join(remote.app.getPath('userData'), 'accounts.db')
-const accountsDb = new Datastore({filename: neDBPath, autoload: true})
+var accountsDb
 
 const state = {
   main: 0,
@@ -84,6 +87,16 @@ const actions = {
       if (!err)
         commit('loadAuszuege', docs)
     })
+  },
+  async initAccounts ({ commit }) {
+    var key = 'key'
+    accountsDb = new Datastore(
+      {filename: neDBPath, autoload: true, beforeDeserialization: GetBeforeDes(key), afterSerialization: GetAfterSer(key)})
+    accountsDb.insert({type: '1', myobj: Date.now()})
+    accountsDb.find({type: '1'}, (err, docs) => {
+      if (!err)
+        console.log(docs)
+    })
   }
 }
 
@@ -93,3 +106,60 @@ export default {
   actions,
   getters
 }
+
+function GetAfterSer (key) {
+  function afterSerialization (str) {
+    if (typeof str !== 'undefined' && str !== '') {
+      var encrypted = AES.encrypt(str, 'key')
+      var ciphertext = encrypted.toString()
+      return ciphertext
+    } else
+    return str
+  }
+  return afterSerialization
+}
+
+function GetBeforeDes (key) {
+  function beforeDeserialization (str) {
+    if (typeof str !== 'undefined' && str !== '') {
+      var decrypted = AES.decrypt(str, key)
+      var plaintext = decrypted.toString(CryptoJS.enc.Utf8)
+      return plaintext
+    } else
+    return str
+  }
+  return beforeDeserialization
+}
+/*
+App.EncryptDB = function (strData) {
+if (strData != undefined && strData != "") {
+var encrypted = App.Crypto.AES.encrypt(strData, App.Constants.DBKey);
+var ciphertext = encrypted.toString();
+return ciphertext;
+} else {
+return strData;
+}
+}
+
+App.DecryptDB = function (strData) {
+if (strData != undefined && strData != "") {
+var decrypted = App.Crypto.AES.decrypt(strData, App.Constants.DBKey);
+var plaintext = decrypted.toString(App.Crypto.enc.Utf8);
+return plaintext;
+} else {
+return strData;
+}
+}
+
+var AES = require("crypto-js/aes");
+var CryptoJS = require("crypto-js");
+
+// Encrypt
+var ciphertext = CryptoJS.AES.encrypt('my message', 'secret key 123');
+
+// Decrypt
+var bytes  = CryptoJS.AES.decrypt(ciphertext.toString(), 'secret key 123');
+var plaintext = bytes.toString(CryptoJS.enc.Utf8);
+
+console.log(plaintext)
+*/
