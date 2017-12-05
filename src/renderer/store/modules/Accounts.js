@@ -12,10 +12,21 @@ const state = {
   main: 0,
   accounts: [],
   selectedAcc: [],  //  {name, data}
-  curSaldos: []   // {name, datum, value}
+  curSaldos: [],   // {name, datum, value}
+  dbKey: false,
+  accDetails: []
 }
 
 const mutations = {
+  addAccDetails (state, sepa) {
+    if (sepa === null)
+      state.accDetails.splice('deleteCount')
+    else
+      state.accDetails.push(sepa)
+  },
+  setDbKey (state, key) {
+    state.dbKey = key
+  },
   toggleSelectAcc (state, account) {
     if (state.selectedAcc.includes(account))
       state.selectedAcc.splice(state.selectedAcc.indexOf(account), 1)
@@ -44,6 +55,9 @@ const mutations = {
 }
 
 const getters = {
+  isAuthenticated (state, getters) {
+    return !!state.dbKey
+  },
   accIsSelected: (state, getters) => (acc) => {
     return state.selectedAcc.includes(acc)
   },
@@ -74,6 +88,14 @@ const getters = {
 }
 
 const actions = {
+  async saveSepas ({commit, state}, sepas) {
+    accountsDb.insert(sepas, (err, newDocs) => {
+      if (!err)
+        commit('addAccDetails', newDocs)
+      else
+        console.dir(err)
+    })
+  },
   addAuszug ({ commit, state }, auszeugeAr) {
     accountsDb.insert(auszeugeAr, (err, newDocs) => {
       if (!err)

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title">Information</div>
+    <div class="title" v-responsiveness="['hidden-xl','hidden-md','hidden-lg']">Information</div>
     <div class="items">
       <div class="item">
         <div class="name">Path:</div>
@@ -31,18 +31,18 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        electron: process.versions['atom-shell'],
-        name: 'landing-page',
-        node: process.versions.node,
-        path: '/',
-        platform: require('os').platform(),
-        vue: require('vue/package.json').version
-      }
+export default {
+  data () {
+    return {
+      electron: process.versions['atom-shell'],
+      name: 'landing-page',
+      node: process.versions.node,
+      path: '/',
+      platform: require('os').platform(),
+      vue: require('vue/package.json').version
     }
   }
+}
 </script>
 
 <style scoped>

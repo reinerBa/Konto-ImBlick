@@ -8,6 +8,9 @@
 
 <script>
 import navigation from './components/Navigation'
+import res from 'vue-responsive/dist/Vue_Responsive.common.js'
+import Vue from 'vue'
+Vue.directive('responsiveness', res)
 
 export default {
   name: 'account-viewer',

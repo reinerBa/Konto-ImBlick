@@ -20,13 +20,18 @@ export default new Router({
       component: require('@/components/AccountManagement')
     },
     {
+      path: '/sepas',
+      name: 'Konten Details',
+      component: require('@/components/AccountsDetails')
+    },
+    {
       path: '/salden',
-      name: 'salden',
+      name: 'Salden',
       component: require('@/components/Salden')
     },
     {
       path: '/charts',
-      name: 'charts',
+      name: 'Charts',
       component: require('@/components/charts')
     }
   ]
