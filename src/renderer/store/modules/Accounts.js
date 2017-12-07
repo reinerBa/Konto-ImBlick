@@ -11,8 +11,8 @@ var accountsDb
 const state = {
   main: 0,
   accounts: [],
-  selectedAcc: [],  //  {name, data}
-  curSaldos: [],   // {name, datum, value}
+  selectedAcc: [], //  {name, data}
+  curSaldos: [], // {name, datum, value}
   dbKey: false,
   accDetails: []
 }
@@ -136,7 +136,7 @@ function GetAfterSer (key) {
       var ciphertext = encrypted.toString()
       return ciphertext
     } else
-    return str
+      return str
   }
   return afterSerialization
 }
@@ -148,7 +148,7 @@ function GetBeforeDes (key) {
       var plaintext = decrypted.toString(CryptoJS.enc.Utf8)
       return plaintext
     } else
-    return str
+      return str
   }
   return beforeDeserialization
 }

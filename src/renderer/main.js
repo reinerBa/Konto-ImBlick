@@ -22,6 +22,6 @@ new Vue({
   template: '<App/>',
   created () {
     this.$store.dispatch('initSettings')
-    this.$store.dispatch('initAccounts')  //  Put to other place after password is entered
+    this.$store.dispatch('initAccounts') // Put to other place after password is entered
   }
 }).$mount('#app')

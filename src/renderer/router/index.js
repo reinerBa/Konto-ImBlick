@@ -12,27 +12,27 @@ export default new Router({
     {
       path: '/',
       name: 'landing-page',
-      component: require('@/components/LandingPage')
+      component: require('@/components/LandingPage').default
     },
     {
       path: '/management',
       name: 'account-management',
-      component: require('@/components/AccountManagement')
+      component: require('@/components/AccountManagement').default
     },
     {
       path: '/sepas',
       name: 'Konten Details',
-      component: require('@/components/AccountsDetails')
+      component: require('@/components/AccountsDetails').default
     },
     {
       path: '/salden',
       name: 'Salden',
-      component: require('@/components/Salden')
+      component: require('@/components/Salden').default
     },
     {
       path: '/charts',
       name: 'Charts',
-      component: require('@/components/charts')
+      component: require('@/components/charts').default
     }
   ]
 })

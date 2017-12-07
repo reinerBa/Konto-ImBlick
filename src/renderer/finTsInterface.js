@@ -6,7 +6,7 @@ export default async function (bankenliste, blz, customerLogin, pin, saldosOrUms
   // Kunden-ID/Benutzerkennung: test1
   // PIN: 1234
   // Bankenliste siehe oben
-  var client = new FinTSClient(blz, customerLogin, pin, bankenliste)  //  bzl: number
+  var client = new FinTSClient(blz, customerLogin, pin, bankenliste) //  bzl: number
   // 3. Verbindung aufbauen
   try {
     await establish(client)
