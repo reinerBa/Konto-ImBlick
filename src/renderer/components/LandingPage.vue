@@ -1,6 +1,5 @@
 <template>
   <div id="wrapper">
-    <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
     <main>
       <div class="left-side">
         <span class="title">
@@ -10,15 +9,15 @@
       </div>
 
       <div class="right-side">
-        <div class="doc">
-          <div class="title">Getting Started</div>
-          <p>
-            electron-vue comes packed with detailed documentation that covers everything from
-            internal configurations, using the project structure, building your application,
-            and so much more.
-          </p>
-          <button @click="open('https://simulatedgreg.gitbooks.io/electron-vue/content/')">Read the Docs</button><br><br>
-        </div>
+        <button class="shortcut-button bg-cyan bg-active-darkBlue fg-white">
+            <span class="icon mif-rocket"></span>
+            <span class="title">Rocket</span>
+            <span class="badge">10</span>
+        </button>
+        <a class="shortcut-button">
+    <span class="icon mif-rocket"></span>
+    <span class="title">Rocket</span>
+</a>
       </div>
     </main>
   </div>

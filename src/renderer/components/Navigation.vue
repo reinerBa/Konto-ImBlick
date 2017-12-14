@@ -29,12 +29,13 @@
   }
 </script>
 
-<style>
+<style scoped>
 ul{
 //  display: inline-flex;
   padding-left: .5rem;
 }
 #navWrapper{
+  margin-top: 3em;
   position: fixed;
   top: 0;
   left: 0;
